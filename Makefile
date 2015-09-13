@@ -1,6 +1,8 @@
-CC=$(CROSS_COMPILE)gcc
+CC ?= $(CROSS_COMPILE)gcc
+BINDIR ?= /usr/sbin
+PROGRAMS = uuc sdimage
 
-all: uuc sdimage
+all: $(PROGRAMS)
 
 uuc: uu.c
 	$(CC) $(CFLAGS) uu.c -o uuc -lpthread
@@ -9,12 +11,9 @@ sdimage: sdimage.c
 	$(CC) $(CFLAGS) sdimage.c -o sdimage
 
 install:
-	mkdir -p   $(DEST_DIR)
-	cp linuxrc $(DEST_DIR)
-	mkdir -p   $(DEST_DIR)/usr/bin
-	cp uu      $(DEST_DIR)/usr/bin
-	cp sdimage $(DEST_DIR)/usr/bin
+	install -d $(DESTDIR)$(BINDIR)
+	install -m 755 linuxrc $(DESTDIR)
+	install -m 755 $(PROGRAMS) $(DESTDIR)$(BINDIR)
 
 clean:
-	rm -f uuc
-	rm -f sdimage
+	rm -f $(PROGRAMS)
